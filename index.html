@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工程出工管理平台</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#6b7280;
+      --line:#dbe3ef;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --warning:#f59e0b;
+      --disabled:#cbd5e1;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft JhengHei",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app{
+      max-width:720px;
+      margin:0 auto;
+      padding:16px;
+      padding-bottom:80px;
+    }
+
+    .title{
+      font-size:24px;
+      font-weight:800;
+      margin:8px 0 4px;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:16px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      margin-bottom:14px;
+      box-shadow:0 6px 18px rgba(15,23,42,.06);
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    label{
+      font-size:13px;
+      color:#374151;
+      font-weight:700;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      font-size:15px;
+      outline:none;
+    }
+
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    button{
+      border:0;
+      border-radius:14px;
+      padding:13px 14px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      width:100%;
+      background:var(--primary);
+      color:#fff;
+    }
+
+    button:hover{background:var(--primary-dark)}
+    button:disabled{
+      background:var(--disabled);
+      color:#64748b;
+      cursor:not-allowed;
+    }
+
+    .btn-secondary{
+      background:#e8eefc;
+      color:#1e40af;
+    }
+
+    .btn-secondary:hover{
+      background:#dbe7ff;
+    }
+
+    .btn-danger{
+      background:#fee2e2;
+      color:#991b1b;
+    }
+
+    .btn-danger:hover{
+      background:#fecaca;
+    }
+
+    .btn-ghost{
+      background:#f1f5f9;
+      color:#334155;
+    }
+
+    .nav{
+      display:grid;
+      gap:10px;
+    }
+
+    .nav button{
+      text-align:left;
+      padding:16px;
+    }
+
+    .hide{display:none!important}
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#3730a3;
+      font-size:12px;
+      font-weight:800;
+      margin:2px 4px 2px 0;
+    }
+
+    .msg{
+      padding:12px;
+      border-radius:14px;
+      font-size:14px;
+      margin-bottom:12px;
+      display:none;
+      white-space:pre-wrap;
+    }
+
+    .msg.show{display:block}
+    .msg.ok{
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .msg.err{
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fecaca;
+    }
+
+    .msg.info{
+      background:#eff6ff;
+      color:#1e40af;
+      border:1px solid #bfdbfe;
+    }
+
+    .stat-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .stat{
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat .num{
+      font-size:24px;
+      font-weight:900;
+      margin-top:4px;
+    }
+
+    .stat .cap{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .tabs{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .tabs button{
+      padding:10px;
+      font-size:13px;
+      background:#f1f5f9;
+      color:#334155;
+    }
+
+    .tabs button.active{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .week-wrap{
+      overflow-x:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+
+    table{
+      border-collapse:collapse;
+      min-width:900px;
+      width:100%;
+      font-size:13px;
+    }
+
+    th,td{
+      border:1px solid var(--line);
+      padding:10px;
+      vertical-align:top;
+      min-width:110px;
+    }
+
+    th{
+      background:#f8fafc;
+      font-weight:900;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    .project-cell{
+      min-width:130px;
+      font-weight:900;
+      background:#f8fafc;
+      position:sticky;
+      left:0;
+      z-index:2;
+    }
+
+    .day-cell{
+      min-height:60px;
+      cursor:pointer;
+      background:#fff;
+    }
+
+    .day-cell:hover{
+      background:#eff6ff;
+    }
+
+    .person-chip{
+      display:inline-block;
+      background:#e0f2fe;
+      color:#075985;
+      border-radius:999px;
+      padding:4px 7px;
+      margin:2px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .record{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:10px;
+      background:#fff;
+    }
+
+    .record b{
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .topbar button{
+      width:auto;
+      padding:9px 12px;
+      font-size:13px;
+    }
+
+    .loading{
+      opacity:.65;
+      pointer-events:none;
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:900;
+      margin:8px 0 12px;
+    }
+
+    .divider{
+      height:1px;
+      background:var(--line);
+      margin:14px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="title">工程出工管理平台</div>
+    <div class="subtitle" id="todayText"></div>
+
+    <div id="globalMsg" class="msg"></div>
+
+    <section id="loginPage" class="card">
+      <div class="section-title">登入</div>
+      <div class="grid">
+        <div>
+          <label>帳號</label>
+          <input id="loginUsername" autocomplete="username" />
+        </div>
+        <div>
+          <label>密碼</label>
+          <input id="loginPassword" type="password" autocomplete="current-password" />
+        </div>
+        <button id="loginBtn" onclick="login()">登入</button>
+      </div>
+      <div class="divider"></div>
+      <div class="small">
+        測試帳號：xiaoming / 1234<br>
+        管理帳號：admin / admin123
+      </div>
+    </section>
+
+    <section id="homePage" class="hide">
+      <div class="card">
+        <div class="topbar">
+          <div>
+            <b id="loginName"></b>
+            <div class="small" id="loginRole"></div>
+          </div>
+          <button class="btn-ghost" onclick="logout()">登出</button>
+        </div>
+
+        <div class="nav">
+          <button onclick="openPage('prePage')">① 每週預排填報</button>
+          <button onclick="openActualPage()">② 實際出工填報</button>
+          <button onclick="openDashboard()">③ 出工總覽看板</button>
+          <button id="adminEntryBtn" class="hide" onclick="openAdmin()">④ 後台管理</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="prePage" class="hide">
+      <div class="card">
+        <div class="topbar">
+          <div class="section-title">每週預排填報</div>
+          <button class="btn-ghost" onclick="openPage('homePage')">返回</button>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>登入人員</label>
+            <input id="preUserName" disabled />
+          </div>
+          <div>
+            <label>出工日期</label>
+            <input id="preDate" type="date" onchange="validatePreForm()" />
+          </div>
+          <div>
+            <label>案場</label>
+            <select id="preProject" onchange="validatePreForm()"></select>
+          </div>
+          <div>
+            <label>車輛</label>
+            <select id="preVehicle" onchange="validatePreForm()"></select>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>開始時間</label>
+              <select id="preStart" onchange="validatePreForm(); updateHours('pre')"></select>
+            </div>
+            <div>
+              <label>結束時間</label>
+              <select id="preEnd" onchange="validatePreForm(); updateHours('pre')"></select>
+            </div>
+          </div>
+          <div>
+            <label>預計工時</label>
+            <input id="preHours" disabled />
+          </div>
+          <div>
+            <label>工作類型</label>
+            <select id="preWorkType" onchange="validatePreForm()">
+              <option value="">請選擇</option>
+              <option>施工</option>
+              <option>查驗</option>
+              <option>測試</option>
+              <option>維修</option>
+              <option>現場協調</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div>
+            <label>工作內容</label>
+            <textarea id="preNote" oninput="validatePreForm()"></textarea>
+          </div>
+          <button id="savePreBtn" onclick="savePreSchedule()" disabled>儲存預排</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="actualPage" class="hide">
+      <div class="card">
+        <div class="topbar">
+          <div class="section-title">實際出工填報</div>
+          <button class="btn-ghost" onclick="openPage('homePage')">返回</button>
+        </div>
+
+        <div id="myPreBox" class="msg info"></div>
+
+        <div class="grid">
+          <div>
+            <label>登入人員</label>
+            <input id="actualUserName" disabled />
+          </div>
+          <div>
+            <label>出工日期</label>
+            <input id="actualDate" type="date" onchange="loadMyPre(); validateActualForm()" />
+          </div>
+          <div>
+            <label>案場</label>
+            <select id="actualProject" onchange="validateActualForm()"></select>
+          </div>
+          <div>
+            <label>車輛</label>
+            <select id="actualVehicle" onchange="validateActualForm()"></select>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label>開始時間</label>
+              <select id="actualStart" onchange="validateActualForm(); updateHours('actual')"></select>
+            </div>
+            <div>
+              <label>結束時間</label>
+              <select id="actualEnd" onchange="validateActualForm(); updateHours('actual')"></select>
+            </div>
+          </div>
+          <div>
+            <label>實際工時</label>
+            <input id="actualHours" disabled />
+          </div>
+          <div>
+            <label>工作類型</label>
+            <select id="actualWorkType" onchange="validateActualForm()">
+              <option value="">請選擇</option>
+              <option>施工</option>
+              <option>查驗</option>
+              <option>測試</option>
+              <option>維修</option>
+              <option>現場協調</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div>
+            <label>工作內容</label>
+            <textarea id="actualNote" oninput="validateActualForm()"></textarea>
+          </div>
+          <button id="saveActualBtn" onclick="saveActualRecord()" disabled>送出實際出工</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboardPage" class="hide">
+      <div class="card">
+        <div class="topbar">
+          <div class="section-title">出工總覽看板</div>
+          <button class="btn-ghost" onclick="openPage('homePage')">返回</button>
+        </div>
+
+        <div class="tabs">
+          <button id="dashActualBtn" class="active" onclick="setDashSource('actual')">實際</button>
+          <button id="dashPreBtn" onclick="setDashSource('pre')">預排</button>
+          <button onclick="openDashboard()">更新</button>
+        </div>
+
+        <div class="grid-2">
+          <button class="btn-secondary" onclick="changeWeek(-7)">上一週</button>
+          <button class="btn-secondary" onclick="changeWeek(7)">下一週</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="stat-row">
+          <div class="stat">
+            <div class="cap">本週人次</div>
+            <div class="num" id="weekCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="cap">本週工時</div>
+            <div class="num" id="weekHours">0</div>
+          </div>
+          <div class="stat">
+            <div class="cap">本月人次</div>
+            <div class="num" id="monthCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="cap">本月工時</div>
+            <div class="num" id="monthHours">0</div>
+          </div>
+          <div class="stat">
+            <div class="cap">本年人次</div>
+            <div class="num" id="yearCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="cap">本年工時</div>
+            <div class="num" id="yearHours">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" id="weekTitle">週排程表</div>
+        <div class="small">可左右滑動；點擊格子可查看人員、工時、車號與工作內容。</div>
+        <div class="week-wrap" id="weekTableWrap"></div>
+      </div>
+
+      <div id="detailCard" class="card hide">
+        <div class="topbar">
+          <div class="section-title" id="detailTitle">明細</div>
+          <button class="btn-ghost" onclick="hideDetail()">關閉</button>
+        </div>
+        <div id="detailContent"></div>
+      </div>
+    </section>
+
+    <section id="adminPage" class="hide">
+      <div class="card">
+        <div class="topbar">
+          <div class="section-title">後台管理</div>
+          <button class="btn-ghost" onclick="openPage('homePage')">返回</button>
+        </div>
+
+        <div class="nav">
+          <button onclick="showAdminPanel('userPanel')">人員帳號管理</button>
+          <button onclick="showAdminPanel('projectPanel')">案場管理</button>
+          <button onclick="showAdminPanel('vehiclePanel')">車輛管理</button>
+        </div>
+      </div>
+
+      <div id="userPanel" class="card hide admin-panel">
+        <div class="section-title">新增人員</div>
+        <div class="grid">
+          <input id="newUsername" placeholder="帳號" />
+          <input id="newPassword" placeholder="密碼" />
+          <input id="newDisplayName" placeholder="姓名" />
+          <select id="newRole">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+          </select>
+          <input id="newDepartment" placeholder="部門" />
+          <button onclick="adminAddUser()">新增人員</button>
+        </div>
+      </div>
+
+      <div id="projectPanel" class="card hide admin-panel">
+        <div class="section-title">新增案場</div>
+        <div class="grid">
+          <input id="newProjectShort" placeholder="案場簡稱" />
+          <textarea id="newProjectFull" placeholder="完整案名"></textarea>
+          <input id="newProjectLocation" placeholder="地點" />
+          <button onclick="adminAddProject()">新增案場</button>
+        </div>
+      </div>
+
+      <div id="vehiclePanel" class="card hide admin-panel">
+        <div class="section-title">新增車輛</div>
+        <div class="grid">
+          <input id="newPlateNo" placeholder="車號，例如 R001" />
+          <input id="newVehicleName" placeholder="車輛名稱，例如 公司車" />
+          <input id="newVehicleType" placeholder="車種，例如 小客車 / 工程車" />
+          <button onclick="adminAddVehicle()">新增車輛</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx4uBhk9pZ_e17ujp2XGyKR7N87CcVc_uglsd4D0_MeUD4iU0dJsUmIpfwrag92BsN8/exec';
+
+    const state = {
+      token: localStorage.getItem('dispatch_token') || '',
+      user: JSON.parse(localStorage.getItem('dispatch_user') || 'null'),
+      projects: [],
+      vehicles: [],
+      users: [],
+      dashSource: 'actual',
+      currentWeekStart: getMondayString(new Date()),
+      sourcePreId: ''
+    };
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init(){
+      setTodayText();
+      fillTimeOptions();
+      setDefaultDates();
+
+      if(state.token && state.user){
+        showLoggedIn();
+        loadMasterData();
+      }else{
+        openPage('loginPage');
+      }
+    }
+
+    function setTodayText(){
+      const d = new Date();
+      const days = ['日','一','二','三','四','五','六'];
+      document.getElementById('todayText').textContent =
+        `今日：${formatDate(d)}（週${days[d.getDay()]}）`;
+    }
+
+    function setDefaultDates(){
+      const today = formatDate(new Date());
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+
+      document.getElementById('preDate').value = formatDate(nextWeek);
+      document.getElementById('actualDate').value = today;
+    }
+
+    function openPage(id){
+      ['loginPage','homePage','prePage','actualPage','dashboardPage','adminPage'].forEach(x=>{
+        document.getElementById(x).classList.add('hide');
+      });
+      document.getElementById(id).classList.remove('hide');
+      clearMsg();
+    }
+
+    function showLoggedIn(){
+      openPage('homePage');
+      document.getElementById('loginName').textContent = `登入人員：${state.user.display_name}`;
+      document.getElementById('loginRole').textContent = `角色：${state.user.role}`;
+      document.getElementById('preUserName').value = state.user.display_name;
+      document.getElementById('actualUserName').value = state.user.display_name;
+
+      if(state.user.role === 'Admin'){
+        document.getElementById('adminEntryBtn').classList.remove('hide');
+      }else{
+        document.getElementById('adminEntryBtn').classList.add('hide');
+      }
+    }
+
+    async function api(action, payload = {}){
+      if(!API_URL || API_URL.includes('PASTE_')){
+        throw new Error('API_URL_NOT_SET');
+      }
+
+      const body = { action, ...payload };
+
+      const res = await fetch(API_URL, {
+        method:'POST',
+        mode:'cors',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify(body)
+      });
+
+      const json = await res.json();
+
+      if(!json.ok){
+        throw new Error(json.error || 'API_ERROR');
+      }
+
+      return json.data;
+    }
+
+    function showMsg(type, text){
+      const box = document.getElementById('globalMsg');
+      box.className = `msg show ${type}`;
+      box.textContent = text;
+    }
+
+    function clearMsg(){
+      const box = document.getElementById('globalMsg');
+      box.className = 'msg';
+      box.textContent = '';
+    }
+
+    function setBusy(btnId, busy, text){
+      const btn = document.getElementById(btnId);
+      if(!btn) return;
+      if(busy){
+        btn.dataset.oldText = btn.textContent;
+        btn.textContent = text || '處理中...';
+        btn.disabled = true;
+      }else{
+        btn.textContent = btn.dataset.oldText || btn.textContent;
+      }
+    }
+
+    async function login(){
+      clearMsg();
+      const username = value('loginUsername');
+      const password = value('loginPassword');
+
+      if(!username || !password){
+        showMsg('err','請輸入帳號與密碼。');
+        return;
+      }
+
+      try{
+        setBusy('loginBtn', true, '登入中...');
+        const data = await api('login',{ username, password });
+
+        state.token = data.token;
+        state.user = data.user;
+
+        localStorage.setItem('dispatch_token', state.token);
+        localStorage.setItem('dispatch_user', JSON.stringify(state.user));
+
+        showLoggedIn();
+        await loadMasterData();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }finally{
+        setBusy('loginBtn', false);
+        document.getElementById('loginBtn').disabled = false;
+      }
+    }
+
+    function logout(){
+      localStorage.removeItem('dispatch_token');
+      localStorage.removeItem('dispatch_user');
+      state.token = '';
+      state.user = null;
+      openPage('loginPage');
+    }
+
+    async function loadMasterData(){
+      try{
+        const data = await api('getMasterData',{ token:state.token });
+        state.projects = data.projects || [];
+        state.vehicles = data.vehicles || [];
+        state.users = data.users || [];
+        fillMasterSelects();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    function fillMasterSelects(){
+      fillProjectSelect('preProject');
+      fillProjectSelect('actualProject');
+      fillVehicleSelect('preVehicle');
+      fillVehicleSelect('actualVehicle');
+      updateHours('pre');
+      updateHours('actual');
+      validatePreForm();
+      validateActualForm();
+    }
+
+    function fillProjectSelect(id){
+      const el = document.getElementById(id);
+      el.innerHTML = '<option value="">請選擇案場</option>';
+      state.projects.forEach(p=>{
+        const opt = document.createElement('option');
+        opt.value = p.project_id;
+        opt.textContent = `${p.project_id}｜${p.project_short_name}`;
+        el.appendChild(opt);
+      });
+    }
+
+    function fillVehicleSelect(id){
+      const el = document.getElementById(id);
+      el.innerHTML = '<option value="">請選擇車輛</option>';
+      state.vehicles.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = v.vehicle_id;
+        opt.textContent = `${v.plate_no}｜${v.vehicle_name}`;
+        el.appendChild(opt);
+      });
+    }
+
+    function fillTimeOptions(){
+      const ids = ['preStart','preEnd','actualStart','actualEnd'];
+      const times = [];
+
+      for(let h=6; h<=22; h++){
+        times.push(`${pad(h)}:00`);
+        times.push(`${pad(h)}:30`);
+      }
+
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        el.innerHTML = '<option value="">請選擇</option>';
+        times.forEach(t=>{
+          const opt = document.createElement('option');
+          opt.value = t;
+          opt.textContent = t;
+          el.appendChild(opt);
+        });
+      });
+
+      document.getElementById('preStart').value = '08:30';
+      document.getElementById('preEnd').value = '17:30';
+      document.getElementById('actualStart').value = '08:30';
+      document.getElementById('actualEnd').value = '17:30';
+    }
+
+    function updateHours(type){
+      const start = value(`${type}Start`);
+      const end = value(`${type}End`);
+      const out = document.getElementById(`${type}Hours`);
+
+      if(!start || !end){
+        out.value = '';
+        return;
+      }
+
+      const hours = calcHours(start,end);
+      out.value = hours > 0 ? hours.toFixed(1) : '時間錯誤';
+    }
+
+    function calcHours(start,end){
+      const s = toMinutes(start);
+      const e = toMinutes(end);
+      return (e - s) / 60;
+    }
+
+    function toMinutes(t){
+      const [h,m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function validatePreForm(){
+      const ok =
+        value('preDate') &&
+        value('preProject') &&
+        value('preVehicle') &&
+        value('preStart') &&
+        value('preEnd') &&
+        calcHours(value('preStart'), value('preEnd')) > 0 &&
+        value('preWorkType') &&
+        value('preNote');
+
+      document.getElementById('savePreBtn').disabled = !ok;
+      return !!ok;
+    }
+
+    function validateActualForm(){
+      const ok =
+        value('actualDate') &&
+        value('actualProject') &&
+        value('actualVehicle') &&
+        value('actualStart') &&
+        value('actualEnd') &&
+        calcHours(value('actualStart'), value('actualEnd')) > 0 &&
+        value('actualWorkType') &&
+        value('actualNote');
+
+      document.getElementById('saveActualBtn').disabled = !ok;
+      return !!ok;
+    }
+
+    async function savePreSchedule(){
+      clearMsg();
+
+      if(!validatePreForm()){
+        showMsg('err','資料尚未填寫完整，請確認日期、案場、車輛、時間、類型與內容。');
+        return;
+      }
+
+      try{
+        setBusy('savePreBtn', true, '儲存中...');
+        await api('savePreSchedule',{
+          token: state.token,
+          work_date: value('preDate'),
+          project_id: value('preProject'),
+          vehicle_id: value('preVehicle'),
+          start_time: value('preStart'),
+          end_time: value('preEnd'),
+          work_type: value('preWorkType'),
+          work_note: value('preNote')
+        });
+
+        showMsg('ok','預排已儲存。');
+        document.getElementById('preNote').value = '';
+        validatePreForm();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }finally{
+        setBusy('savePreBtn', false);
+        validatePreForm();
+      }
+    }
+
+    async function openActualPage(){
+      openPage('actualPage');
+      await loadMyPre();
+    }
+
+    async function loadMyPre(){
+      const box = document.getElementById('myPreBox');
+      box.className = 'msg info';
+      box.textContent = '';
+      state.sourcePreId = '';
+
+      const workDate = value('actualDate');
+      if(!workDate) return;
+
+      try{
+        const rows = await api('getMyPreSchedule',{
+          token: state.token,
+          work_date: workDate
+        });
+
+        if(!rows.length){
+          box.className = 'msg info show';
+          box.innerHTML = '目前沒有找到該日預排，可直接手動填報。';
+          return;
+        }
+
+        const r = rows[0];
+        state.sourcePreId = r.record_id;
+
+        box.className = 'msg info show';
+        box.innerHTML = `
+          已找到預排：${r.project_id}｜${r.project_short_name}<br>
+          ${r.start_time} - ${r.end_time}｜車號：${r.plate_no}<br>
+          <button class="btn-secondary" style="margin-top:10px" onclick="applyPre('${r.record_id}')">套用預排資料</button>
+        `;
+
+        window.__myPreRows = rows;
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    function applyPre(recordId){
+      const rows = window.__myPreRows || [];
+      const r = rows.find(x=>x.record_id === recordId);
+      if(!r) return;
+
+      state.sourcePreId = r.record_id;
+      document.getElementById('actualProject').value = r.project_id;
+      document.getElementById('actualVehicle').value = r.vehicle_id;
+      document.getElementById('actualStart').value = r.start_time;
+      document.getElementById('actualEnd').value = r.end_time;
+      document.getElementById('actualWorkType').value = r.work_type;
+      document.getElementById('actualNote').value = r.work_note;
+
+      updateHours('actual');
+      validateActualForm();
+      showMsg('ok','已套用預排資料，可依實際情況修改後送出。');
+    }
+
+    async function saveActualRecord(){
+      clearMsg();
+
+      if(!validateActualForm()){
+        showMsg('err','資料尚未填寫完整，請確認日期、案場、車輛、時間、類型與內容。');
+        return;
+      }
+
+      try{
+        setBusy('saveActualBtn', true, '送出中...');
+        await api('saveActualRecord',{
+          token: state.token,
+          source_pre_id: state.sourcePreId || '',
+          work_date: value('actualDate'),
+          project_id: value('actualProject'),
+          vehicle_id: value('actualVehicle'),
+          start_time: value('actualStart'),
+          end_time: value('actualEnd'),
+          work_type: value('actualWorkType'),
+          work_note: value('actualNote')
+        });
+
+        showMsg('ok','實際出工紀錄已送出。');
+        document.getElementById('actualNote').value = '';
+        state.sourcePreId = '';
+        validateActualForm();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }finally{
+        setBusy('saveActualBtn', false);
+        validateActualForm();
+      }
+    }
+
+    async function openDashboard(){
+      openPage('dashboardPage');
+      await Promise.all([loadStats(), loadWeeklyOverview()]);
+    }
+
+    function setDashSource(source){
+      state.dashSource = source;
+      document.getElementById('dashActualBtn').classList.toggle('active', source === 'actual');
+      document.getElementById('dashPreBtn').classList.toggle('active', source === 'pre');
+      loadWeeklyOverview();
+    }
+
+    function changeWeek(days){
+      const d = parseDate(state.currentWeekStart);
+      d.setDate(d.getDate() + days);
+      state.currentWeekStart = formatDate(d);
+      loadWeeklyOverview();
+    }
+
+    async function loadStats(){
+      try{
+        const data = await api('getStats',{
+          token: state.token,
+          base_date: formatDate(new Date())
+        });
+
+        document.getElementById('weekCount').textContent = data.weekly.count;
+        document.getElementById('weekHours').textContent = data.weekly.hours;
+        document.getElementById('monthCount').textContent = data.monthly.count;
+        document.getElementById('monthHours').textContent = data.monthly.hours;
+        document.getElementById('yearCount').textContent = data.yearly.count;
+        document.getElementById('yearHours').textContent = data.yearly.hours;
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    async function loadWeeklyOverview(){
+      try{
+        const data = await api('getWeeklyOverview',{
+          token: state.token,
+          week_start: state.currentWeekStart,
+          source: state.dashSource
+        });
+
+        renderWeekTable(data);
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    function renderWeekTable(data){
+      document.getElementById('weekTitle').textContent =
+        `週排程表｜${data.week_start} ～ ${data.week_end}`;
+
+      const days = ['週一','週二','週三','週四','週五','週六','週日'];
+
+      let html = '<table><thead><tr>';
+      html += '<th class="project-cell">案場</th>';
+
+      data.dates.forEach((date,i)=>{
+        html += `<th>${days[i]}<br>${date.slice(5)}</th>`;
+      });
+
+      html += '</tr></thead><tbody>';
+
+      if(!data.projects.length){
+        html += `<tr><td colspan="8">目前此週尚無資料。</td></tr>`;
+      }else{
+        data.projects.forEach(p=>{
+          html += `<tr>`;
+          html += `<td class="project-cell">${p.project_id}<br><span class="small">${p.project_short_name}</span></td>`;
+
+          data.dates.forEach(date=>{
+            const cell = p.days[date];
+            const chips = cell.records.map(r=>`<span class="person-chip">${escapeHtml(r.display_name)}</span>`).join('');
+            html += `
+              <td class="day-cell" onclick='showDetail(${JSON.stringify(date)},${JSON.stringify(p.project_id)})'>
+                ${chips || '<span class="small">—</span>'}
+                ${cell.count ? `<div class="small">${cell.count}人｜${cell.hours}hr</div>` : ''}
+              </td>
+            `;
+          });
+
+          html += `</tr>`;
+        });
+      }
+
+      html += '</tbody></table>';
+      document.getElementById('weekTableWrap').innerHTML = html;
+      window.__weekData = data;
+    }
+
+    function showDetail(date, projectId){
+      const data = window.__weekData;
+      if(!data) return;
+
+      const project = data.projects.find(p=>p.project_id === projectId);
+      if(!project) return;
+
+      const records = project.days[date].records || [];
+
+      document.getElementById('detailCard').classList.remove('hide');
+      document.getElementById('detailTitle').textContent =
+        `${date}｜${project.project_id} ${project.project_short_name}`;
+
+      const box = document.getElementById('detailContent');
+
+      if(!records.length){
+        box.innerHTML = '<div class="small">此格目前無資料。</div>';
+        return;
+      }
+
+      box.innerHTML = records.map(r=>`
+        <div class="record">
+          <b>${escapeHtml(r.display_name)}</b>
+          <div>${r.start_time} - ${r.end_time}｜${r.work_hours} 小時｜${escapeHtml(r.work_type)}</div>
+          <div>車號：${escapeHtml(r.plate_no || '未填')}</div>
+          <div class="small">${escapeHtml(r.work_note || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    function hideDetail(){
+      document.getElementById('detailCard').classList.add('hide');
+    }
+
+    function openAdmin(){
+      if(!state.user || state.user.role !== 'Admin'){
+        showMsg('err','此帳號沒有後台權限。');
+        return;
+      }
+      openPage('adminPage');
+    }
+
+    function showAdminPanel(id){
+      document.querySelectorAll('.admin-panel').forEach(x=>x.classList.add('hide'));
+      document.getElementById(id).classList.remove('hide');
+    }
+
+    async function adminAddUser(){
+      try{
+        await api('adminAddUser',{
+          token:state.token,
+          username:value('newUsername'),
+          password:value('newPassword'),
+          display_name:value('newDisplayName'),
+          role:value('newRole'),
+          department:value('newDepartment')
+        });
+
+        showMsg('ok','人員已新增。');
+        await loadMasterData();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    async function adminAddProject(){
+      try{
+        await api('adminAddProject',{
+          token:state.token,
+          project_short_name:value('newProjectShort'),
+          project_full_name:value('newProjectFull'),
+          location:value('newProjectLocation')
+        });
+
+        showMsg('ok','案場已新增。');
+        await loadMasterData();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    async function adminAddVehicle(){
+      try{
+        await api('adminAddVehicle',{
+          token:state.token,
+          plate_no:value('newPlateNo'),
+          vehicle_name:value('newVehicleName'),
+          vehicle_type:value('newVehicleType')
+        });
+
+        showMsg('ok','車輛已新增。');
+        await loadMasterData();
+      }catch(err){
+        showMsg('err', errorText(err.message));
+      }
+    }
+
+    function value(id){
+      const el = document.getElementById(id);
+      return el ? String(el.value || '').trim() : '';
+    }
+
+    function formatDate(d){
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+
+    function parseDate(s){
+      const [y,m,d] = s.split('-').map(Number);
+      return new Date(y,m-1,d);
+    }
+
+    function getMondayString(date){
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      d.setDate(d.getDate() + diff);
+      return formatDate(d);
+    }
+
+    function pad(n){
+      return String(n).padStart(2,'0');
+    }
+
+    function escapeHtml(str){
+      return String(str ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function errorText(code){
+      const map = {
+        API_URL_NOT_SET:'尚未設定 Apps Script API 網址。',
+        MISSING_ACTION:'系統缺少 action。',
+        INVALID_ACTION:'系統功能不存在。',
+        INVALID_JSON:'資料格式錯誤。',
+        LOGIN_FAILED:'帳號或密碼錯誤，或帳號已停用。',
+        INVALID_TOKEN:'登入已失效，請重新登入。',
+        ADMIN_ONLY:'此功能限管理者使用。',
+        PROJECT_NOT_FOUND:'找不到案場，或案場已停用。',
+        VEHICLE_NOT_FOUND:'找不到車輛，或車輛已停用。',
+        INVALID_TIME_RANGE:'結束時間不可早於或等於開始時間。',
+        INVALID_TIME_STEP:'時間只能選整點或半點。',
+        INVALID_HOUR_DECIMAL:'工時格式不符合 .0 或 .5。',
+        USERNAME_EXISTS:'帳號已存在。',
+        INVALID_ROLE:'角色錯誤。',
+        INVALID_TARGET:'管理目標錯誤。',
+        INVALID_STATUS:'狀態錯誤。',
+        NOT_FOUND:'找不到資料。'
+      };
+      return map[code] || `系統錯誤：${code}`;
+    }
+  </script>
+</body>
+</html>
